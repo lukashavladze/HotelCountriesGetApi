@@ -64,21 +64,24 @@ namespace HotelGetApi.Controllers
 
             var content = await response.Content.ReadAsStringAsync();
             var countries = JsonConvert.DeserializeObject<List<Country>>(content);
-            foreach(var country in countries)
+            foreach (var country in countries)
             {
-                var newcountry = new Country
+                var existingCountry = await _context.Countries.FirstOrDefaultAsync(n => n.Name == country.Name && n.ShortName == country.ShortName);
+                if (existingCountry == null)
                 {
-                    Name = country.Name,
-                    ShortName = country.ShortName,
+                    var newcountry = new Country
+                    {
+                        Name = country.Name,
+                        ShortName = country.ShortName,
 
-                };
-                await _context.AddAsync(newcountry);
-
+                    };
+                    await _context.AddAsync(newcountry);
+                }
+                }
+                await _context.SaveChangesAsync();
+                return Ok(countries);
             }
-            await _context.SaveChangesAsync();
-            return Ok(countries);
-        }
-
+        
 
 
         private bool CountryExists(int id)
