@@ -1,92 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using HotelGetApi;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HotelGetApi;
-using Newtonsoft.Json;
 
-namespace HotelGetApi.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class HotelsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class HotelsController : ControllerBase
+    private readonly IHotelDataService _hotelDataService;
+
+    public HotelsController(IHotelDataService hotelDataService)
     {
-        private readonly HotelDbContext _context;
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public HotelsController(HotelDbContext context, IHttpClientFactory httpClientFactory)
-        {
-            _context = context;
-            this._httpClientFactory = httpClientFactory;
-        }
-
-        // GET: api/Hotels
-        [HttpGet("hotels")]
-        public async Task<ActionResult> Gethotels()
-        {
-            var httpcliet = _httpClientFactory.CreateClient();
-            var response = await httpcliet.GetAsync("https://localhost:7033/api/Hotels");
-            response.EnsureSuccessStatusCode();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var hotels = JsonConvert.DeserializeObject<List<Hotel>>(content);
-            foreach (var hot in hotels)
-            {
-                var existingHotel = await _context.Hotels
-            .FirstOrDefaultAsync(h => h.Name == hot.Name && h.Address == hot.Address && h.CountryId == hot.CountryId);
-                if (existingHotel == null)
-                {
-                    var newHotel = new Hotel
-                    {
-                        Name = hot.Name,
-                        Address = hot.Address,
-                        Rating = hot.Rating,
-                        CountryId = hot.CountryId,
-                        
-                    };
-                    await _context.AddAsync(newHotel);
-                }
-
-            }
-            await _context.SaveChangesAsync();
-            return Ok(hotels);
-        }
-
-        [HttpGet("countries")]
-        public async Task<ActionResult> GetCountry()
-        {
-            var httpcliet = _httpClientFactory.CreateClient();
-            var response = await httpcliet.GetAsync("https://localhost:7033/api/v2/countries");
-            response.EnsureSuccessStatusCode();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var countries = JsonConvert.DeserializeObject<List<Country>>(content);
-            foreach (var country in countries)
-            {
-                var existingCountry = await _context.Countries.FirstOrDefaultAsync(n => n.Name == country.Name && n.ShortName == country.ShortName);
-                if (existingCountry == null)
-                {
-                    var newcountry = new Country
-                    {
-                        Name = country.Name,
-                        ShortName = country.ShortName,
-
-                    };
-                    await _context.AddAsync(newcountry);
-                }
-                }
-                await _context.SaveChangesAsync();
-                return Ok(countries);
-            }
-        
-
-
-        private bool CountryExists(int id)
-        {
-            return (_context.Countries?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        _hotelDataService = hotelDataService;
     }
+
+    [HttpGet("hotels")]
+    public async Task<ActionResult> Gethotels()
+    {
+        // Instead of calling the logic directly in the controller,
+        // delegate it to the IHotelDataService service
+        await _hotelDataService.ProcessHotelDataAsync();
+
+        // Return response or data as needed
+        // ...
+        return Ok();
+    }
+
+    [HttpGet("countries")]
+    public async Task<ActionResult> GetCountry()
+    {
+        // Instead of calling the logic directly in the controller,
+        // delegate it to the IHotelDataService service
+        await _hotelDataService.ProcessHotelDataAsync();
+
+        // Return response or data as needed
+        // ...
+        return Ok();
+    }
+
 }

@@ -1,4 +1,4 @@
-﻿using HotelGetApi.Controllers;
+﻿
 using System.ComponentModel;
 using System.Threading;
 
@@ -7,22 +7,26 @@ namespace HotelGetApi
     public class backgroundworkertest : BackgroundService
     {
         public readonly ILogger<backgroundworkertest> _logger;
-        public readonly HotelsController _controller;
-        public backgroundworkertest(ILogger<backgroundworkertest> logger, HotelsController controller)
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        public backgroundworkertest(ILogger<backgroundworkertest> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
-            _controller = controller;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var dataService = scope.ServiceProvider.GetRequiredService<IHotelDataService>();
+                    await dataService.ProcessHotelDataAsync();
+                }
                 _logger.LogInformation("worker runs at :{time}", DateTimeOffset.Now);
-                await _controller.Gethotels();
-                await _controller.GetCountry();
+                
 
-                await Task.Delay(10000, stoppingToken);
+                await Task.Delay(30000, stoppingToken);
 
             }
         }
