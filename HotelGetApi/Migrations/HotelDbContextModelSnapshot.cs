@@ -39,7 +39,7 @@ namespace HotelGetApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("countries");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("HotelGetApi.Hotel", b =>
@@ -68,7 +68,7 @@ namespace HotelGetApi.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("hotels");
+                    b.ToTable("Hotels");
                 });
 
             modelBuilder.Entity("HotelGetApi.Hotel", b =>

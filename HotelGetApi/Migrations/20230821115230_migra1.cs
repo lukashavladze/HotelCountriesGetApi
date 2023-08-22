@@ -5,13 +5,13 @@
 namespace HotelGetApi.Migrations
 {
     /// <inheritdoc />
-    public partial class mig1 : Migration
+    public partial class migra1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "countries",
+                name: "Countries",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -21,11 +21,11 @@ namespace HotelGetApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_countries", x => x.Id);
+                    table.PrimaryKey("PK_Countries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "hotels",
+                name: "Hotels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,18 +37,18 @@ namespace HotelGetApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_hotels", x => x.Id);
+                    table.PrimaryKey("PK_Hotels", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_hotels_countries_CountryId",
+                        name: "FK_Hotels_Countries_CountryId",
                         column: x => x.CountryId,
-                        principalTable: "countries",
+                        principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_hotels_CountryId",
-                table: "hotels",
+                name: "IX_Hotels_CountryId",
+                table: "Hotels",
                 column: "CountryId");
         }
 
@@ -56,10 +56,10 @@ namespace HotelGetApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "hotels");
+                name: "Hotels");
 
             migrationBuilder.DropTable(
-                name: "countries");
+                name: "Countries");
         }
     }
 }

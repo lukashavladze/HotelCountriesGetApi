@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelGetApi.Migrations
 {
     [DbContext(typeof(HotelDbContext))]
-    [Migration("20230821080336_mig1")]
-    partial class mig1
+    [Migration("20230821115230_migra1")]
+    partial class migra1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,7 @@ namespace HotelGetApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("countries");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("HotelGetApi.Hotel", b =>
@@ -71,7 +71,7 @@ namespace HotelGetApi.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("hotels");
+                    b.ToTable("Hotels");
                 });
 
             modelBuilder.Entity("HotelGetApi.Hotel", b =>
